@@ -16,6 +16,7 @@
 | 依赖描述 | `go.mod`、`go.sum` |
 | 开发辅助 | `_fake_llm.py`（本地假 LLM 服务端，用于无真实 Key 时联调） |
 | 文档 | `README.md`、本 SOP |
+| 工程配置 | `.gitignore`（忽略 `*.exe`、`data/`、测试产物等，避免把构建/运行残留误提交） |
 
 **已排除**（不会进包）：`*.exe` 二进制、`data/` 运行时数据、`probe.txt`/`shot-*.png` 测试产物。
 
