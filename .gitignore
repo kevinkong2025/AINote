@@ -1,0 +1,17 @@
+# Binaries (build outputs)
+*.exe
+
+# Runtime data
+data/
+
+# Test / probe artifacts
+probe.txt
+shot-*.png
+gui-mode.txt
+
+# Packaged archives
+*.zip
+
+# OS / editor junk
+Thumbs.db
+.DS_Store

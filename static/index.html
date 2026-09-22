@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoteHarness - 提示词笔记库</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">📒 NoteHarness</div>
+  <nav id="nav">
+    <button class="nav-btn" data-route="notes">笔记</button>
+    <button class="nav-btn" data-route="archive">存档</button>
+    <button class="nav-btn" data-route="topics">Topic</button>
+  </nav>
+  <div class="top-actions">
+    <button id="btn-export" class="icon-btn" title="导出全部笔记">⬇ 全部导出</button>
+    <button id="btn-theme" class="icon-btn" title="切换深浅色">🌙</button>
+    <button id="btn-settings" class="icon-btn" title="设置">⚙</button>
+  </div>
+</header>
+
+<main id="main">
+  <div id="workspace">
+  <!-- ============ NOTES PAGE ============ -->
+  <section id="page-notes" class="page">
+    <aside class="sidebar">
+      <div class="side-toolbar">
+        <button id="btn-new-draft" class="btn small primary">+ 新建草稿</button>
+      </div>
+      <div class="side-toolbar wrap">
+        <label class="sel-all"><input type="checkbox" id="notes-sel-all">全选</label>
+        <button id="btn-compare" class="btn small" disabled>对比</button>
+        <button id="btn-archive-sel" class="btn small" disabled>存档</button>
+        <button id="btn-export-sel" class="btn small" disabled>导出</button>
+        <button id="btn-notes-chat" class="btn small" disabled>🤖 AI Chat</button>
+        <span class="hint" id="notes-sel-hint"></span>
+      </div>
+      <ul id="notes-list" class="item-list"></ul>
+    </aside>
+    <div class="content" id="note-editor-wrap">
+      <div id="note-empty" class="empty-state">← 选择或新建一篇笔记</div>
+      <div id="note-main" class="hidden col">
+        <div class="doc-toolbar">
+          <input id="note-title" class="doc-title" placeholder="笔记标题">
+          <div class="seg">
+            <button id="seg-edit" class="seg-btn active">编辑</button>
+            <button id="seg-preview" class="seg-btn">预览</button>
+          </div>
+          <button id="btn-save-note" class="btn small primary">保存 (Ctrl+S)</button>
+          <button id="btn-ai-summary" class="btn small">✨ AI 总结</button>
+          <button id="btn-archive-one" class="btn small">📦 存档</button>
+          <button id="btn-note-agent" class="btn small">🤖 讨论</button>
+        </div>
+        <div id="note-tags" class="tag-row"></div>
+        <textarea id="note-area" class="md-area" placeholder="用 Markdown 记录今天的提示词与收获…" spellcheck="false"></textarea>
+        <div id="note-preview" class="md-preview hidden"></div>
+        <div class="status-line" id="note-status"></div>
+      </div>
+      <div id="note-compare" class="hidden col">
+        <div class="doc-toolbar">
+          <button id="btn-close-compare" class="btn small">← 返回</button>
+          <span class="hint">点击中间箭头可将一侧内容替换到另一侧</span>
+        </div>
+        <div id="compare-body" class="compare-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHIVE PAGE ============ -->
+  <section id="page-archive" class="page hidden">
+    <aside class="sidebar">
+      <div class="side-toolbar">
+        <input id="archive-search" class="search-input" placeholder="🔍 搜索标题…">
+      </div>
+      <div class="side-toolbar wrap">
+        <button id="btn-arch-tag" class="btn small" disabled>打 Tag</button>
+        <button id="btn-arch-compare" class="btn small" disabled>对比</button>
+        <button id="btn-arch-export" class="btn small" disabled>导出</button>
+      </div>
+      <div id="archive-tree" class="archive-tree"></div>
+    </aside>
+    <div class="content">
+      <div id="arch-empty" class="empty-state">← 选择一天的存档查看</div>
+      <div id="arch-main" class="hidden col">
+        <div class="doc-toolbar">
+          <span id="arch-title" class="doc-title-ro"></span>
+          <button id="btn-arch-edit" class="btn small">编辑</button>
+          <button id="btn-arch-save" class="btn small primary hidden">保存</button>
+          <button id="btn-arch-chat" class="btn small push-right">🤖 AI Chat</button>
+        </div>
+        <div id="arch-tags" class="tag-row"></div>
+        <div id="arch-view" class="md-preview"></div>
+        <textarea id="arch-area" class="md-area hidden" spellcheck="false"></textarea>
+      </div>
+      <div id="arch-compare" class="hidden col">
+        <div class="doc-toolbar">
+          <button id="btn-close-arch-compare" class="btn small">← 返回</button>
+          <span class="hint">点击中间箭头可将一侧内容替换到另一侧</span>
+        </div>
+        <div id="arch-compare-body" class="compare-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOPICS PAGE ============ -->
+  <section id="page-topics" class="page hidden">
+    <div id="topics-grid-wrap" class="content">
+      <div id="topics-empty" class="empty-state hidden">还没有任何 Tag，存档笔记时可以给它们打上 Tag。</div>
+      <div id="topics-grid" class="topics-grid"></div>
+    </div>
+    <div id="topic-detail" class="hidden page-inner">
+      <aside class="tag-rail" id="tag-rail"></aside>
+      <aside class="sidebar">
+        <div class="side-toolbar wrap">
+          <button id="btn-topic-compare" class="btn small" disabled>对比</button>
+        </div>
+        <ul id="topic-list" class="item-list"></ul>
+      </aside>
+      <div class="content">
+        <div id="topic-empty" class="empty-state">← 选择一篇文档</div>
+        <div id="topic-main" class="hidden col">
+          <div class="doc-toolbar">
+            <span id="topic-title" class="doc-title-ro"></span>
+            <button id="btn-topic-edit" class="btn small">编辑</button>
+            <button id="btn-topic-save" class="btn small primary hidden">保存</button>
+            <button id="btn-topic-chat" class="btn small push-right">🤖 AI Chat</button>
+          </div>
+          <div id="topic-tags" class="tag-row"></div>
+          <div id="topic-view" class="md-preview"></div>
+          <textarea id="topic-area" class="md-area hidden" spellcheck="false"></textarea>
+        </div>
+        <div id="topic-compare" class="hidden col">
+          <div class="doc-toolbar">
+            <button id="btn-close-topic-compare" class="btn small">← 返回</button>
+            <span class="hint">点击中间箭头可将一侧内容替换到另一侧</span>
+          </div>
+          <div id="topic-compare-body" class="compare-body"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SETTINGS PAGE ============ -->
+  <section id="page-settings" class="page hidden">
+    <div class="settings-wrap">
+      <h2>LLM API 配置</h2>
+      <div id="profiles-list" class="profiles-list"></div>
+      <div class="card">
+        <h3 id="profile-form-title">添加模型配置</h3>
+        <div class="form-grid">
+          <label>别名 *<input id="pf-alias" placeholder="如 GLM"></label>
+          <label>模型名称 *<input id="pf-model" placeholder="如 glm-5.2 / kimi-k3"></label>
+          <label class="span2">Base URL *<input id="pf-base" placeholder="https://api.moonshot.cn/v1"></label>
+          <label class="span2">API Key *<input id="pf-key" type="password" placeholder="sk-..."></label>
+          <label>最大上下文<input id="pf-ctx" type="number" placeholder="留空按 256K 计算"></label>
+          <label>接口格式
+            <select id="pf-format">
+              <option value="openai">OpenAI</option>
+              <option value="anthropic">Anthropic</option>
+            </select>
+          </label>
+        </div>
+        <div class="row-end">
+          <button id="btn-profile-cancel" class="btn hidden">取消</button>
+          <button id="btn-profile-save" class="btn primary">测试并保存</button>
+        </div>
+        <div id="profile-test-status" class="status-line"></div>
+      </div>
+
+      <h2>AI 选项（对话快捷泡泡）</h2>
+      <div id="presets-list" class="presets-list"></div>
+      <button id="btn-preset-add" class="btn small">+ 添加选项</button>
+
+      <h2>数据</h2>
+      <div class="row">
+        <button id="btn-export2" class="btn">⬇ 导出全部笔记 (zip)</button>
+      </div>
+    </div>
+  </section>
+  </div><!-- /#workspace -->
+
+  <div id="chat-resizer" class="hidden" title="拖动调整讨论区宽度"></div>
+
+  <!-- ============ CHAT PANEL ============ -->
+  <div id="chat-panel" class="hidden">
+  <div class="chat-header">
+    <select id="chat-select"></select>
+    <button id="btn-chat-rename" class="icon-btn" title="重命名对话">✏️</button>
+    <button id="btn-chat-new" class="icon-btn" title="新对话">＋</button>
+    <button id="btn-chat-del" class="icon-btn" title="删除当前对话">🗑</button>
+    <button id="btn-chat-close" class="icon-btn" title="收起">✕</button>
+  </div>
+  <div id="chat-context" class="chat-context"></div>
+  <div id="chat-messages" class="chat-messages"></div>
+  <div id="chat-bubbles" class="chat-bubbles"></div>
+  <div class="chat-input-row">
+    <div class="chat-meta">
+      <button id="model-chip" class="model-chip">未配置模型</button>
+      <span id="token-stat" class="token-stat">↑0 ↓0</span>
+    </div>
+    <textarea id="chat-input" rows="3" placeholder="输入问题，Enter 发送 / Shift+Enter 换行"></textarea>
+    <div class="row-end">
+      <button id="btn-chat-send" class="btn primary small">发送</button>
+    </div>
+  </div>
+</div>
+</main>
+
+<div id="modal-mask" class="hidden"><div id="modal-box"></div></div>
+<div id="ctx-menu" class="hidden"></div>
+<div id="toast"></div>
+
+<script src="marked.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
